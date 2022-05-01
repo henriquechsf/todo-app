@@ -6,14 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import tech.henriquedev.todoapp.R
+import tech.henriquedev.todoapp.databinding.FragmentAddBinding
+import tech.henriquedev.todoapp.databinding.FragmentListBinding
 
 class AddFragment : Fragment() {
+    private var _binding: FragmentAddBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add, container, false)
+    ): View {
+        _binding = FragmentAddBinding.inflate(inflater, container, false)
+        return binding.root
     }
 }
