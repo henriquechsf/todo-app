@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import tech.henriquedev.todoapp.R
 import tech.henriquedev.todoapp.databinding.FragmentAddBinding
-import tech.henriquedev.todoapp.databinding.FragmentListBinding
 
 class AddFragment : Fragment() {
     private var _binding: FragmentAddBinding? = null
