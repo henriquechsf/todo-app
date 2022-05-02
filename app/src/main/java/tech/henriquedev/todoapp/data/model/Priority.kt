@@ -1,4 +1,4 @@
-package tech.henriquedev.todoapp.data
+package tech.henriquedev.todoapp.data.model
 
 enum class Priority {
     HIGH,
