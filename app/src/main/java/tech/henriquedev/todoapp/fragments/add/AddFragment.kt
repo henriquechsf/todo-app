@@ -1,14 +1,12 @@
 package tech.henriquedev.todoapp.fragments.add
 
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import tech.henriquedev.todoapp.R
-import tech.henriquedev.todoapp.data.model.Priority
 import tech.henriquedev.todoapp.data.model.TodoData
 import tech.henriquedev.todoapp.data.viewmodel.TodoViewModel
 import tech.henriquedev.todoapp.databinding.FragmentAddBinding
@@ -18,19 +16,24 @@ class AddFragment : Fragment() {
     private var _binding: FragmentAddBinding? = null
     private val binding get() = _binding!!
 
-    private val todoViewModel: TodoViewModel by viewModels()
-    private val sharedViewModel: SharedViewModel by viewModels()
+    private val mTodoViewModel: TodoViewModel by viewModels()
+    private val mSharedViewModel: SharedViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // Set Menu
         setHasOptionsMenu(true)
 
-        return binding.root
+        binding.spinPriorities.onItemSelectedListener = mSharedViewModel.listener
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -50,17 +53,17 @@ class AddFragment : Fragment() {
         val mPriority = binding.spinPriorities.selectedItem.toString()
         val mDescription = binding.edtDescription.text.toString()
 
-        val validation = sharedViewModel.verifyDataFromUser(mTitle, mDescription)
+        val validation = mSharedViewModel.verifyDataFromUser(mTitle, mDescription)
 
         if (validation) {
             val newData = TodoData(
                 0,
                 mTitle,
-                sharedViewModel.parsePriority(mPriority),
+                mSharedViewModel.parsePriority(mPriority),
                 mDescription
             )
 
-            todoViewModel.insertData(newData)
+            mTodoViewModel.insertData(newData)
             Toast.makeText(requireContext(), "Succesfully added", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_addFragment_to_listFragment)
         } else {
