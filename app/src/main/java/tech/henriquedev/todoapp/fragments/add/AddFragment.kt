@@ -12,12 +12,14 @@ import tech.henriquedev.todoapp.data.model.Priority
 import tech.henriquedev.todoapp.data.model.TodoData
 import tech.henriquedev.todoapp.data.viewmodel.TodoViewModel
 import tech.henriquedev.todoapp.databinding.FragmentAddBinding
+import tech.henriquedev.todoapp.fragments.SharedViewModel
 
 class AddFragment : Fragment() {
     private var _binding: FragmentAddBinding? = null
     private val binding get() = _binding!!
 
     private val todoViewModel: TodoViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,13 +50,13 @@ class AddFragment : Fragment() {
         val mPriority = binding.spinPriorities.selectedItem.toString()
         val mDescription = binding.edtDescription.text.toString()
 
-        val validation = verifyDataFromUser(mTitle, mDescription)
+        val validation = sharedViewModel.verifyDataFromUser(mTitle, mDescription)
 
         if (validation) {
             val newData = TodoData(
                 0,
                 mTitle,
-                parsePriority(mPriority),
+                sharedViewModel.parsePriority(mPriority),
                 mDescription
             )
 
@@ -63,21 +65,6 @@ class AddFragment : Fragment() {
             findNavController().navigate(R.id.action_addFragment_to_listFragment)
         } else {
             Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun verifyDataFromUser(title: String, description: String): Boolean {
-        return if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description)) {
-            false
-        } else !(title.isEmpty() || description.isEmpty())
-    }
-
-    private fun parsePriority(priority: String): Priority {
-        return when (priority) {
-            "High Priority" -> Priority.HIGH
-            "Medium Priority" -> Priority.MEDIUM
-            "Low Priority" -> Priority.LOW
-            else -> Priority.LOW
         }
     }
 }
