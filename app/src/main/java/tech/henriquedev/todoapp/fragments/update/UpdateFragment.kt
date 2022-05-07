@@ -3,10 +3,12 @@ package tech.henriquedev.todoapp.fragments.update
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import tech.henriquedev.todoapp.R
 import tech.henriquedev.todoapp.data.model.Priority
 import tech.henriquedev.todoapp.databinding.FragmentUpdateBinding
+import tech.henriquedev.todoapp.fragments.SharedViewModel
 
 class UpdateFragment : Fragment() {
     private var _binding: FragmentUpdateBinding? = null
@@ -14,6 +16,8 @@ class UpdateFragment : Fragment() {
 
     // safeArgs
     private val args by navArgs<UpdateFragmentArgs>()
+
+    private val mSharedViewModel: SharedViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +36,7 @@ class UpdateFragment : Fragment() {
         binding.edtCurrentTitle.setText(args.curremtItem.title)
         binding.edtCurrentDescription.setText(args.curremtItem.description)
         binding.spinCurrentPriorities.setSelection(parsePriority(args.curremtItem.priority))
+        binding.spinCurrentPriorities.onItemSelectedListener = mSharedViewModel.listener
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
