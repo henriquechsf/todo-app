@@ -3,12 +3,12 @@ package tech.henriquedev.todoapp.fragments.update
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import tech.henriquedev.todoapp.R
-import tech.henriquedev.todoapp.data.model.Priority
 import tech.henriquedev.todoapp.data.model.TodoData
 import tech.henriquedev.todoapp.data.viewmodel.TodoViewModel
 import tech.henriquedev.todoapp.databinding.FragmentUpdateBinding
@@ -50,9 +50,11 @@ class UpdateFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_save) {
-            updateItem()
+        when (item.itemId) {
+            R.id.menu_save -> updateItem()
+            R.id.menu_delete -> confirmItemRemoval()
         }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -76,5 +78,18 @@ class UpdateFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun confirmItemRemoval() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Sim") {_, _ ->
+            mTodoViewModel.deleteItem(args.curremtItem)
+            Toast.makeText(requireContext(), "Successfully Removed", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+        }
+        builder.setNegativeButton("Não") {_, _ ->}
+        builder.setTitle("Remover ${args.curremtItem.title}?")
+        builder.setMessage("Tem certeza que deseja remover ${args.curremtItem.title}?")
+        builder.create().show()
     }
 }
