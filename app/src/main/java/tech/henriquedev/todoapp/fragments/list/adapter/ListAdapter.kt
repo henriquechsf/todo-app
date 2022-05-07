@@ -1,4 +1,4 @@
-package tech.henriquedev.todoapp.fragments.list
+package tech.henriquedev.todoapp.fragments.list.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import tech.henriquedev.todoapp.R
 import tech.henriquedev.todoapp.data.model.Priority
 import tech.henriquedev.todoapp.data.model.TodoData
+import tech.henriquedev.todoapp.fragments.list.ListFragmentDirections
 
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
@@ -33,7 +34,8 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         val rowBackground = holder.itemView.findViewById<ConstraintLayout>(R.id.row_background)
 
         rowBackground.setOnClickListener {
-            val action = ListFragmentDirections.actionListFragmentToUpdateFragment(dataList[position])
+            val action =
+                ListFragmentDirections.actionListFragmentToUpdateFragment(dataList[position])
             holder.itemView.findNavController().navigate(action)
         }
     }

@@ -4,16 +4,18 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import tech.henriquedev.todoapp.R
 import tech.henriquedev.todoapp.data.viewmodel.TodoViewModel
 import tech.henriquedev.todoapp.databinding.FragmentListBinding
 import tech.henriquedev.todoapp.fragments.SharedViewModel
+import tech.henriquedev.todoapp.fragments.list.adapter.ListAdapter
 
 class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
@@ -43,6 +45,8 @@ class ListFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireActivity())
         }
 
+        swipeToDelete(binding.recyclerView)
+
         mTodoViewModel.getAllData.observe(viewLifecycleOwner, Observer { data ->
             mSharedViewModel.checkIfDatabaEmpty(data)
             listAdapter.setData(data)
@@ -59,6 +63,18 @@ class ListFragment : Fragment() {
         binding.listLayout.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_updateFragment)
         }
+    }
+
+    private fun swipeToDelete(recyclerView: RecyclerView) {
+        val swipeToDeleteCallback = object : SwipeToDelete() {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val itemToDelete = listAdapter.dataList[viewHolder.adapterPosition]
+                mTodoViewModel.deleteItem(itemToDelete)
+                Toast.makeText(requireContext(), "Successfully Removed.", Toast.LENGTH_SHORT).show()
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
