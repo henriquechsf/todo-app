@@ -2,11 +2,15 @@ package tech.henriquedev.todoapp.fragments.update
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import tech.henriquedev.todoapp.R
 import tech.henriquedev.todoapp.data.model.Priority
+import tech.henriquedev.todoapp.data.model.TodoData
+import tech.henriquedev.todoapp.data.viewmodel.TodoViewModel
 import tech.henriquedev.todoapp.databinding.FragmentUpdateBinding
 import tech.henriquedev.todoapp.fragments.SharedViewModel
 
@@ -18,6 +22,7 @@ class UpdateFragment : Fragment() {
     private val args by navArgs<UpdateFragmentArgs>()
 
     private val mSharedViewModel: SharedViewModel by viewModels()
+    private val mTodoViewModel: TodoViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +40,7 @@ class UpdateFragment : Fragment() {
 
         binding.edtCurrentTitle.setText(args.curremtItem.title)
         binding.edtCurrentDescription.setText(args.curremtItem.description)
-        binding.spinCurrentPriorities.setSelection(parsePriority(args.curremtItem.priority))
+        binding.spinCurrentPriorities.setSelection(mSharedViewModel.parsePriorityToInt(args.curremtItem.priority))
         binding.spinCurrentPriorities.onItemSelectedListener = mSharedViewModel.listener
     }
 
@@ -44,11 +49,32 @@ class UpdateFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun parsePriority(priority: Priority): Int {
-        return when (priority) {
-            Priority.HIGH -> 0
-            Priority.MEDIUM -> 1
-            Priority.LOW -> 2
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_save) {
+            updateItem()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateItem() {
+        val title = binding.edtCurrentTitle.text.toString()
+        val description = binding.edtCurrentDescription.text.toString()
+        val getPriority = binding.spinCurrentPriorities.selectedItem.toString()
+
+        val validation = mSharedViewModel.verifyDataFromUser(title, description)
+        if (validation) {
+            val updatedItem = TodoData(
+                args.curremtItem.id,
+                title,
+                mSharedViewModel.parsePriority(getPriority),
+                description
+            )
+
+            mTodoViewModel.updateData(updatedItem)
+            Toast.makeText(requireContext(), "Successfully updated", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+        } else {
+            Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
         }
     }
 }
