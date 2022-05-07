@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -12,12 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import tech.henriquedev.todoapp.R
 import tech.henriquedev.todoapp.data.viewmodel.TodoViewModel
 import tech.henriquedev.todoapp.databinding.FragmentListBinding
+import tech.henriquedev.todoapp.fragments.SharedViewModel
 
 class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
     private val mTodoViewModel: TodoViewModel by viewModels()
+    private val mSharedViewModel: SharedViewModel by viewModels()
 
     private val listAdapter: ListAdapter by lazy { ListAdapter() }
 
@@ -41,7 +44,12 @@ class ListFragment : Fragment() {
         }
 
         mTodoViewModel.getAllData.observe(viewLifecycleOwner, Observer { data ->
+            mSharedViewModel.checkIfDatabaEmpty(data)
             listAdapter.setData(data)
+        })
+
+        mSharedViewModel.emptyDatabase.observe(viewLifecycleOwner, Observer {
+            showEmptyDatabaseViews(it)
         })
 
         binding.fabCreate.setOnClickListener {
@@ -77,5 +85,15 @@ class ListFragment : Fragment() {
         builder.setTitle("Remover Tudo?")
         builder.setMessage("Tem certeza que deseja remover todas tarefas?")
         builder.create().show()
+    }
+
+    private fun showEmptyDatabaseViews(emptyDatabase: Boolean) {
+        if (emptyDatabase) {
+            binding.imageNoData.visibility = View.VISIBLE
+            binding.textNodata.visibility = View.VISIBLE
+        } else {
+            binding.imageNoData.visibility = View.INVISIBLE
+            binding.textNodata.visibility = View.INVISIBLE
+        }
     }
 }
