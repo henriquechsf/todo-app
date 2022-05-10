@@ -8,6 +8,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import tech.henriquedev.todoapp.R
 import tech.henriquedev.todoapp.data.model.Priority
@@ -19,8 +20,15 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
     var dataList = emptyList<TodoData>()
 
     fun setData(todoData: List<TodoData>) {
+        val todoDiffUtil = TodoDiffUtil(dataList, todoData)
+        val todoDiffResult = DiffUtil.calculateDiff(todoDiffUtil)
+
         this.dataList = todoData
-        notifyDataSetChanged()
+
+        todoDiffResult.dispatchUpdatesTo(this)
+
+        // alterado pelo DiffUtil - maior performance
+        // notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

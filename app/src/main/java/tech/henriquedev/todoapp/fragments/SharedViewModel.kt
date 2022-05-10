@@ -14,7 +14,7 @@ import tech.henriquedev.todoapp.data.model.TodoData
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
-    val emptyDatabase: MutableLiveData<Boolean> = MutableLiveData(true)
+    val emptyDatabase: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun checkIfDatabaEmpty(todoData: List<TodoData>) {
         emptyDatabase.value = todoData.isEmpty()
