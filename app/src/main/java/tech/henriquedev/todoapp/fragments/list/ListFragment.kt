@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import tech.henriquedev.todoapp.R
 import tech.henriquedev.todoapp.data.model.TodoData
 import tech.henriquedev.todoapp.data.viewmodel.TodoViewModel
@@ -45,6 +46,10 @@ class ListFragment : Fragment() {
         binding.recyclerView.apply {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(requireActivity())
+
+            itemAnimator = SlideInUpAnimator().apply {
+                addDuration = 300
+            }
         }
 
         swipeToDelete(binding.recyclerView)
