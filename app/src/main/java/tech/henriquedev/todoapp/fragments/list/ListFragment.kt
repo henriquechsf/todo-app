@@ -95,7 +95,7 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
         val snackbar = Snackbar.make(view, "Deleted '${deletedItem.title}'", Snackbar.LENGTH_LONG)
         snackbar.setAction("Undo") {
             mTodoViewModel.insertData(deletedItem)
-//            listAdapter.notifyItemChanged(position)  - fix undo swipe delete task
+//          listAdapter.notifyItemChanged(position)  - fix undo swipe delete task
         }
         snackbar.show()
     }
