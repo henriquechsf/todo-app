@@ -46,4 +46,8 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
             repository.deleteAll()
         }
     }
+
+    fun searchDatabase(searchQuery: String): LiveData<List<TodoData>> {
+        return repository.searchDatabase(searchQuery)
+    }
 }
