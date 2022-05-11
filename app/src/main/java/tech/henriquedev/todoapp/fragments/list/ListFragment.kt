@@ -84,18 +84,18 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
                 //Toast.makeText(requireContext(), "Successfully Removed: '${deletedItem.title}'", Toast.LENGTH_SHORT).show()
 
                 // restore deleted item
-                restoreDeletedData(viewHolder.itemView, deletedItem, viewHolder.adapterPosition)
+                restoreDeletedData(viewHolder.itemView, deletedItem)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun restoreDeletedData(view: View, deletedItem: TodoData, position: Int) {
+    private fun restoreDeletedData(view: View, deletedItem: TodoData) {
         val snackbar = Snackbar.make(view, "Deleted '${deletedItem.title}'", Snackbar.LENGTH_LONG)
         snackbar.setAction("Undo") {
             mTodoViewModel.insertData(deletedItem)
-            listAdapter.notifyItemChanged(position)
+//            listAdapter.notifyItemChanged(position)  - fix undo swipe delete task
         }
         snackbar.show()
     }
@@ -137,7 +137,7 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun searchThroughDatabase(query: String) {
-        var searchQuery = "%$query%"
+        val searchQuery = "%$query%"
 
         mTodoViewModel.searchDatabase(searchQuery).observe(this, Observer { list ->
             list?.let {
